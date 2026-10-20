@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Крипто Дашборд</title>
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #f0b90b;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background-color: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            width: 200px;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f0b90b;
+        }
+
+        .change {
+            font-size: 14px;
+            color: #00c853
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Крипто Дашборд</h1>
+    <div class="cards">
+        <div class="card" id="bitcoin">
+            <h2>Bitcoin</h2>
+            <p class="price">$00.000</p>
+            <p class="change">+0.00%</p>
+        </div>
+        <div class="card" id="ethereum">
+            <h2>Ethereum</h2>
+            <p class="price">$00.000</p>
+            <p class="change">+0.00%</p>
+        </div>
+        <div class="card" id="solana">
+            <h2>Solana</h2>
+            <p class="price">$00.000</p>
+            <p class="change">+0.00%</p>
+        </div>
+    </div>
+    <script>
+        console.log("Скрипт запустился");
+        function showCoin(coin, data) {
+            const price = data[coin].usd;
+            document.querySelector("#" + coin + " .price").textContent = "$" + price.toLocaleString("en-US");
+
+            const change = data[coin].usd_24h_change;
+            const changeElement = document.querySelector("#" + coin + " .change");
+
+            if (change >= 0) {
+                changeElement.textContent = "+" + change.toFixed(2).toLocaleString("en-US") + "%";
+                changeElement.style.color = "#00c853";
+            }
+            else {
+                changeElement.textContent = change.toFixed(2).toLocaleString("en-US") + "%"
+                changeElement.style.color = "#ff3d00"
+            }
+        }
+        function loadPrices() {
+            fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true")
+                .then(response => response.json())
+                .then(
+                    data => {
+                        console.log(data);
+                        showCoin("bitcoin", data)
+                        showCoin("ethereum", data)
+                        showCoin("solana", data)
+                    }
+                )
+                .catch(error => {
+                    console.log("Ошибка:", error);
+                });
+        }
+        loadPrices();
+        setInterval(loadPrices, 60000)
+    </script>
+</body>
+
+</html>
